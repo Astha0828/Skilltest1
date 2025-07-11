@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  backend-dev:
+    build: ./backend-dev
+    ports:
+      - "5000:5000"
+    environment:
+      - ENVIRONMENT=development
+    networks:
+      - app-network
+
+  backend-prod:
+    build: ./backend-prod
+    ports:
+      - "5001:5001"
+    environment:
+      - ENVIRONMENT=production
+    networks:
+      - app-network
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend-dev
+      - backend-prod
+    environment:
+      - REACT_APP_DEV_API=http://localhost:5000
+      - REACT_APP_PROD_API=http://localhost:5001
+    networks:
+      - app-network
+
+networks:
+  app-network:
